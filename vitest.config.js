@@ -6,10 +6,10 @@ import viteConfig from './vite.config'
 export default mergeConfig(
   viteConfig,
   defineConfig({
-    base: '/serialization/',
+    base: './serialization/',
     resolve: {
       alias: {
-        '@': fileURLToPath(new URL('./serialization/src', import.meta.url))
+        '@': fileURLToPath(new URL('./src', import.meta.url))
       }
     }
   })
