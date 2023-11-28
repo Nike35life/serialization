@@ -172,7 +172,7 @@ const parseColors = computed(() => {
       </tr>
     </table>
     <br />
-    <div>{{ serialisation }}</div>
+    <div class="serialised">{{ serialisation }}</div>
     <h2>Deserialised data</h2>
     <div>{{ deserialisation }}</div>
   </div>
@@ -193,7 +193,7 @@ const parseColors = computed(() => {
       </tr>
     </table>
     <br />
-    <div>{{ equalityArray }}</div>
+    <div class="serialised">{{ equalityArray }}</div>
     <h2>Deserialised data</h2>
     <div>{{ deequalisator }}</div>
   </div>
@@ -238,12 +238,17 @@ textarea {
   text-align: center;
   background: red;
 }
+.serialised {
+  background: rgba(0, 202, 0, 0.44);
+  border: 1px solid #000;
+}
 .colorWrapper {
   display: flex;
   width: 100%;
   align-items: center;
   justify-content: flex-start;
   flex-wrap: wrap;
+  border: 1px solid #000;
 }
 .colorPalets {
   width: 30px;
