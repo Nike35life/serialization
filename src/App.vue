@@ -65,6 +65,81 @@ const deequalisator = computed(() => {
 
   return deserializedArray;
 });
+
+/* Colorfull Serialisation */
+const colorTriples = computed(() => {
+  let triplesArray = [];
+  let hexColor = '#';
+
+  dataArray.value.forEach((element, index) => {
+    let elemMod = parseInt(element);
+    if (elemMod > 255) {
+      elemMod = elemMod - 300;
+    }
+
+    let hex = elemMod.toString(16);
+    if (hex.includes('-')) {
+      hex = hex.length === 2 ? '-0' + hex.substring(1) : hex;
+    } else {
+      hex = hex.length === 1 ? '0' + hex : hex;
+    }
+    hexColor += hex;
+
+    if (!((index + 1) % 3)) {
+      triplesArray.push(hexColor);
+      hexColor = '#';
+    }
+  });
+
+  if (hexColor !== '#') {
+    triplesArray.push(hexColor);
+    hexColor = '#';
+  }
+
+  return triplesArray;
+});
+
+const parseColors = computed(() => {
+  let decoded = [];
+  let position = 0;
+
+  colorTriples.value.forEach((element) => {
+    let hex = element.replace('#', '');
+    for (let i = 0; i < parseInt(hex.length / 2); i++) {
+      if (hex.includes('-')) {
+        if (hex[position] === '-') {
+          if (!!hex.substring(position, position + 3)) {
+            decoded.push(hex.substring(position, position + 3));
+            position += 3;
+          }
+        } else {
+          if (!!hex.substring(position, position + 2)) {
+            decoded.push(hex.substring(position, position + 2));
+            position += 2;
+          }
+        }
+      } else {
+        if (!!hex.substring(position, position + 2)) {
+          decoded.push(hex.substring(position, position + 2));
+          position += 2;
+        }
+      }
+    }
+    position = 0;
+  });
+
+  decoded = decoded.map((element) => {
+    let decimal = parseInt(element, 16);
+
+    if (decimal > 0) {
+      return decimal;
+    } else {
+      return decimal + 300;
+    }
+  });
+
+  return decoded;
+});
 </script>
 
 <template>
@@ -78,9 +153,10 @@ const deequalisator = computed(() => {
   <div class="center">
     <button @click="activeTab = 0">UTF-16 Serialisation</button>
     <button @click="activeTab = 1">Equal Serialisation</button>
+    <button @click="activeTab = 2">Colorfull Serialisation</button>
   </div>
   <!-- utf-16 tab -->
-  <div v-if="activeTab == 0">
+  <div v-if="activeTab === 0">
     <h2>Serialised data</h2>
     <hr />
     <table border="1">
@@ -101,7 +177,7 @@ const deequalisator = computed(() => {
     <div>{{ deserialisation }}</div>
   </div>
   <!-- equality tab -->
-  <div v-if="activeTab == 1">
+  <div v-if="activeTab === 1">
     <h2>Serialised data</h2>
     <hr />
     <table border="1">
@@ -121,6 +197,33 @@ const deequalisator = computed(() => {
     <h2>Deserialised data</h2>
     <div>{{ deequalisator }}</div>
   </div>
+  <!-- colorfull tab -->
+  <div v-if="activeTab === 2">
+    <h2>Serialised data</h2>
+    <hr />
+    <table border="1">
+      <tr>
+        <td>initial string length</td>
+        <td>serialized string length</td>
+        <td>compress rate</td>
+      </tr>
+      <tr>
+        <td>{{ dataArray.toString().replaceAll(',', '').length }}</td>
+        <td>{{ colorTriples.toString().replaceAll(',', '').length }}</td>
+        <td>{{ 100 - parseInt((colorTriples.toString().replaceAll(',', '').length / dataArray.toString().replaceAll(',', '').length) * 100) }}%</td>
+      </tr>
+    </table>
+    <br />
+    <div class="colorWrapper">
+      <div
+        v-for="color in colorTriples"
+        :style="{ background: color }"
+        :data-color="color"
+        class="colorPalets"></div>
+    </div>
+    <h2>Deserialised data</h2>
+    <div>{{ parseColors }}</div>
+  </div>
 </template>
 
 <style scoped>
@@ -134,5 +237,16 @@ textarea {
   padding: 15px;
   text-align: center;
   background: red;
+}
+.colorWrapper {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+.colorPalets {
+  width: 30px;
+  height: 30px;
 }
 </style>
