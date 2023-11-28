@@ -6,7 +6,7 @@ import viteConfig from './vite.config'
 export default mergeConfig(
   viteConfig,
   defineConfig({
-    base: '/News-page/',
+    base: '/serialization/',
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url))
