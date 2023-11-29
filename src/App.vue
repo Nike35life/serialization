@@ -217,7 +217,7 @@ const parseColors = computed(() => {
     <div class="colorWrapper">
       <div
         v-for="color in colorTriples"
-        :style="{ background: color }"
+        :style="{ background: color.replaceAll('-', '') }"
         :data-color="color"
         class="colorPalets"></div>
     </div>
